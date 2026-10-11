@@ -1,15 +1,27 @@
 package fr.efrei.java;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 /**
  * Représente l'adresse postale d'un collaborateur.
  * Reprise de TP2 avec ajout de toString() pour les affichages en ligne (Annuaire).
  */
+@Entity
 public class Adresse {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String rue;
     private String codePostal;
     private String ville;
     private String pays;
+
+    protected Adresse() { }
 
     public Adresse(String rue, String codePostal, String ville, String pays) {
         this.rue = rue;
@@ -18,6 +30,7 @@ public class Adresse {
         this.pays = pays;
     }
 
+    public Long getId()           { return id; }
     public String getRue()        { return rue; }
     public String getCodePostal() { return codePostal; }
     public String getVille()      { return ville; }

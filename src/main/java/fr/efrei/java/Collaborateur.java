@@ -28,7 +28,8 @@ public abstract class Collaborateur {
     private String nom;
     @Column(nullable = false)
     private double salaire;
-    @Transient
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "adresse_id")
     private Adresse adresse;
 
     protected Collaborateur(

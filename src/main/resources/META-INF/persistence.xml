@@ -8,6 +8,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
         <!-- Une ligne par entité : à compléter au fil du TP -->
+        <class>fr.efrei.java.Adresse</class>
         <class>fr.efrei.java.Collaborateur</class>
         <class>fr.efrei.java.Programmeur</class>
         <class>fr.efrei.java.Testeur</class>

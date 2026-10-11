@@ -2,7 +2,7 @@
 
 ## Partie A -Fiabiliser l'application
 
-1. ### \- Casser l'application
+### 1\. Casser l'application
 
 Comportement 1 : Lorsque l'on souhaite augmenter le salaire avec un pourcentage négatif, cela laisse le salaire de base sans le modifier ni afficher de message d'erreur explicite. Le code devrait afficher un message à l'utilisateur lui disant que la saisie est incorrecte.
 
@@ -32,7 +32,7 @@ Avec un .find()? Non car MariaDB empêchera la création du nouveau collaborateu
 
 
 
-### 6\. A reecrire (ça vient de l'IA ça)
+### 6\. A réecrire (ça vient de l'IA ça)
 
 Le format « C + 3 chiffres » (limites et C1000) :
 
@@ -71,9 +71,19 @@ La solution est d'utiliser une clé technique (générée automatiquement par la
 - **Différence :** Le SQL travaille sur des tables et des colonnes physiques de la base de données. Le JPQL travaille sur des entités et des attributs Java (avec respect de la casse des classes et des champs).
 - **Conséquence :** Une requête JPQL sur `Collaborateur` retourne directement des objets Java typés avec leur type réel (`Programmeur` ou `Testeur`).
 
-### 9\. 
+### 9\. Alice a toujours une adresse
+
+- **Relation métier et cardinalité :** Un collaborateur a une adresse, mais plusieurs collaborateurs peuvent partager la même adresse postale (relation Many-to-One). Une adresse peut exister indépendamment d'un collaborateur.
+- **Emplacement de la clé étrangère :** C'est la table `Collaborateur` qui porte la colonne `adresse_id` référençant la clé `id` de la table `Adresse`.
+- **Mapping JPA :** `@ManyToOne(cascade = CascadeType.PERSIST)` avec `@JoinColumn(name = "adresse_id")` sur l'attribut `adresse`. Le cascade permet de persister l'adresse automatiquement en même temps que le collaborateur.
+- **Clé technique vs métier :** La clé technique auto-générée (`IDENTITY`) ne dépend pas des données métier, ne change jamais et évite les conflits d'insertion ou les mises à jour en cascade.
 
 
 
-### 10\. 
+### 10\. Comprendre d’abord. Automatiser ensuite.
 
+Comparaison entre l'entité générée par l'outil et notre entité manuelle :
+1. **Clé primaire :** L'outil a mappé la colonne sous forme d'une simple chaîne sans `@GeneratedValue` (`idCollaborateur`), car la base ne gère pas de séquence automatique sur ce format textuel.
+2. **Absence de polymorphisme :** L'outil génère un modèle plat avec un attribut `metier` (String) au lieu d'une hiérarchie objet (`Collaborateur`, `Programmeur`, `Testeur`).
+3. **Encapsulation :** L'outil crée des setters publics génériques pour chaque colonne, ce qui expose l'état interne et ne permet pas d'appliquer les règles métier (comme empêcher un salaire négatif).
+4. **Attributs spécifiques :** `langagePrefere` se retrouve dans la classe unique alors qu'il ne concerne en réalité que les programmeurs.
