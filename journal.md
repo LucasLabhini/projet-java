@@ -62,3 +62,18 @@ Qu’est-ce qui rendrait une clé primaire plus « propre » ?
 
 La solution est d'utiliser une clé technique (générée automatiquement par la base de données, comme un identifiant numérique 1, 2, 3... avec @GeneratedValue). Cette clé est invisible pour l'utilisateur et ne change jamais. Le vrai matricule "C001" devient alors une simple colonne de texte (avec une règle @Column(unique=true)) qu'on peut modifier librement sans casser les relations entre les tables. (Tu feras ça dans le Challenge B du TP !)
 
+### 7\. 
+
+
+
+### 8. Retrouver autrement que par identifiant
+
+- **Différence :** Le SQL travaille sur des tables et des colonnes physiques de la base de données. Le JPQL travaille sur des entités et des attributs Java (avec respect de la casse des classes et des champs).
+- **Conséquence :** Une requête JPQL sur `Collaborateur` retourne directement des objets Java typés avec leur type réel (`Programmeur` ou `Testeur`).
+
+### 9\. 
+
+
+
+### 10\. 
+

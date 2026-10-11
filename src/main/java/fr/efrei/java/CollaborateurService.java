@@ -53,4 +53,24 @@ public class CollaborateurService {
             }
         }
     }
+
+    public java.util.List<Collaborateur> trouverParSalaireSuperieurA(double seuil) {
+        try (jakarta.persistence.EntityManager em = fabrique.createEntityManager()) {
+            return em.createQuery(
+                            "select c from Collaborateur c where c.salaire > :seuil",
+                            Collaborateur.class)
+                    .setParameter("seuil", seuil)
+                    .getResultList();
+        }
+    }
+
+    public java.util.List<Collaborateur> trouverParNomContenant(String fragment) {
+        try (jakarta.persistence.EntityManager em = fabrique.createEntityManager()) {
+            return em.createQuery(
+                            "select c from Collaborateur c where lower(c.nom) like :motif",
+                            Collaborateur.class)
+                    .setParameter("motif", "%" + fragment.toLowerCase() + "%")
+                    .getResultList();
+        }
+    }
 }

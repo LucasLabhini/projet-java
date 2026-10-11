@@ -29,8 +29,20 @@ public class HelloEfrei {
         service.augmenterAlice();
         System.out.println("Augmentation réussie");
 
+
+        System.out.println("--- Test JPQL salaire > 40000 ---");
+        for (Collaborateur c : service.trouverParSalaireSuperieurA(40000.0)) {
+            System.out.println(c);
+        }
+
+        System.out.println("--- Test JPQL nom contenant 'mar' ---");
+        for (Collaborateur c : service.trouverParNomContenant("mar")) {
+            System.out.println(c);
+        }
+
         // 4. Fermeture de la fabrique tout à la fin, au moment de quitter
         fabrique.close();
+
 
         // --- Initialisation de l'annuaire avec les données de démonstration ---
         Annuaire annuaire = new Annuaire();
