@@ -1,5 +1,8 @@
 package fr.efrei.java;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -14,6 +17,20 @@ import java.util.Scanner;
 public class HelloEfrei {
 
     public static void main(String[] args) {
+
+        EntityManagerFactory fabrique = Persistence.createEntityManagerFactory("collaborateurs-pu");
+
+        // 2. On donne la fabrique à notre service pour qu'il puisse travailler
+        CollaborateurService service = new CollaborateurService(fabrique);
+
+
+        // 3. On appelle simplement la méthode de la Mission 7
+        System.out.println("Augmentation d'Alice");
+        service.augmenterAlice();
+        System.out.println("Augmentation réussie");
+
+        // 4. Fermeture de la fabrique tout à la fin, au moment de quitter
+        fabrique.close();
 
         // --- Initialisation de l'annuaire avec les données de démonstration ---
         Annuaire annuaire = new Annuaire();

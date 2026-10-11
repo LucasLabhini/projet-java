@@ -1,11 +1,14 @@
 package fr.efrei.java;
 
+import jakarta.persistence.Entity;
+
 /**
  * Programmeur : collaborateur spécialisé dans le développement logiciel.
  * Implémente Formateur car un programmeur peut animer des formations internes.
  *
  * Reprise du TP2 avec ajout de l'identifiant (délégué à Collaborateur).
  */
+@Entity
 public class Programmeur extends Collaborateur implements Formateur {
 
     private String langagePrefere;
@@ -19,6 +22,9 @@ public class Programmeur extends Collaborateur implements Formateur {
             String langagePrefere) {
         super(identifiant, prenom, nom, salaire, adresse);
         this.langagePrefere = langagePrefere;
+    }
+
+    protected Programmeur() {
     }
 
     public String getLangagePrefere() { return langagePrefere; }

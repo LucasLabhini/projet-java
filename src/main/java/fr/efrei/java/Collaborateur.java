@@ -1,6 +1,8 @@
 package fr.efrei.java;
 
 import java.util.Objects;
+
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,14 +13,22 @@ import org.slf4j.LoggerFactory;
  * du contrat equals()/hashCode() basé sur cet identifiant,
  * et d'une méthode abstraite getMetier() pour les affichages polymorphes.
  */
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "type_metier")
 public abstract class Collaborateur {
 
     private static final Logger logger = LoggerFactory.getLogger(Collaborateur.class);
 
+    @Id
     private String identifiant;   // Nouveau en TP3 — clé logique unique (ex. "C001")
+    @Column(length = 50)
     private String prenom;
+    @Column(length = 50)
     private String nom;
+    @Column(nullable = false)
     private double salaire;
+    @Transient
     private Adresse adresse;
 
     protected Collaborateur(
@@ -32,6 +42,9 @@ public abstract class Collaborateur {
         this.nom = nom;
         this.salaire = salaire;
         this.adresse = adresse;
+    }
+
+    protected Collaborateur() {
     }
 
     // --- Accesseurs ---
