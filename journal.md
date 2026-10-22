@@ -20,50 +20,49 @@ Une erreur de saisie et une règle métier violée ne sont pas le même problèm
 
 Lorsque l'on déclare une bibliothèque dans le pom.xml, Maven s'occupe automatiquement de chercher et installer toutes les "sous-dépendances" de celle-ci. Si on ajoute les fichiers .jar, cela nécessitera d'ajouter toutes les "sous-dépendances" à la main. De plus, les fichiers .jar peuvent être relativement lourds.
 
+## Partie B - Alice et Alex refusent de disparaître
+
+### 5\. Alice refuse de disparître
+- Un objet Java est un objet que l'on crée avec un 'new'. Il disparaît dès lors que l'on arrête le programme.
+- Une entité JPA est un objet Java mais qui est marqué par l'annotation @Entity. Il rempli donc une ligne d'une table de la base de données et il est possible de modifier l'entité en Java pour que JPA la traduise automatiquement en SQL et fasse la mise à jour en base.
+- Enfin, une ligne d'une table c'est la donnée qui est stockée dans le SGBD et qui persiste même après l'arrêt du programme mais on ne peut "y toucher" qu'en SQL.
+
+Concernant la question de si on ne devait faire qu'une seule table pour toute la hiérarchie ou une pour chaque hiérarchie, nous avons privilégié la première solution en ajoutant une sorte de colonne qui précise le type de collaborateur. Cela permet de faire des requêtes beaucoup plus simples sur tous les collaborateurs sans nécessiter de jointure.
+
+Si l'on arrête MySQL et qu'on relance le programme, on obtient un message d'erreur plutôt destiné au développeur dans la console qui dit que la connexion à la base de données n'a pas pu être établie. Rien n'est affiché pour l'utilisateur.
+
+find(C999) retourne : Exception in thread "main" java.lang.NullPointerException: Cannot invoke "fr.efrei.java.Collaborateur.getPrenom()" because "inconnu" is null
+at fr.efrei.java.DemarrageJPA.main(DemarrageJPA.java:25).
+Soit un message d'erreur disant qu'on ne peut pas récupérer le prénom de quelqu'un (ou quelque chose) dont la valeur est "null" .
 
 
-### 5\.
+### 6\. Alice rentre dans la base
 
+#####  Que vaut une clé comme C001 ?
+- On ne peut enregistrer que 999 collaborateurs. Au delà, il y aura un problème si la longueur de l'Id est limitée à 4 caractères.
+- C'est la personne qui crée manuellement le collaborateur, qui lui affecte un identifiant. Si 2 personnes créent des collaborateurs en même temps et tentent de leur donner le même Id, le code laissera faire mais la base de données le refusera la deuxième création car elle donnera lieu à un doublon.
+- Une erreur commise lors de la création de l'id peut nécessiter de multiples modifications pour la corriger si la clé est référencée dans plusieurs tables.
+
+Lorsque l'on persiste deux collaborateurs différents portant le même identifiant, l'application lève une exception car MariaDB refuse la création d'un doublon sur une clé primaire. Cela se fait lors de l'appel du transaction.commit().
 5\. Retrouvez la règle du doublon (mission 2). Avant de persister, comment savoir si C001 existe déjà ? La clé primaire de la base protège-t-elle suffisamment l’utilisateur ?
 
-Avec un .find()? Non car MariaDB empêchera la création du nouveau collaborateur mais cela fera crasher l'application complète. Il faut une condition directement dans le code. 
+Avec un .find() nous pouvons savoir si un identifiant existe déjà. Non car MariaDB empêchera la création du nouveau collaborateur mais cela fera crasher l'application complète. Il faut une condition directement dans le code. 
+
+Une clé générée automatiquement dans la base de données serait plus appropriée.
 
 
+### 7\. Alice obtient une augmentation sans écrire UPDATE
 
+- Le SQL UPDATE est généré par Hibernate qui l'envoie automatiquement à MariaDB en arrière-plan.
 
+Une entité gérée est un objet Java qui est rattaché à un EntityManager ouvert. Parce qu'elle est "gérée", l'outil observe tous les changements qu'elle subit.
 
-### 6\. A réecrire (ça vient de l'IA ça)
+Le contexte de persistance, c'est la mémoire de travail de l'EntityManager 
 
-Le format « C + 3 chiffres » (limites et C1000) :
+La transaction est le déclencheur de la synchronisation. La base de données ne peut être modifiée qu'à l'intérieur d'une transaction sécurisée. Sans appel à commit() pour valider la transaction, le contexte de persistance n'enverra jamais ses modifications.
 
-On ne peut enregistrer que 999 collaborateurs (de C001 à C999). Arrivé à C1000, le format est cassé (5 caractères au lieu de 4). Si la base de données a été configurée avec un VARCHAR(4), l'application plantera net car le texte sera trop long.
-
-
-
-Qui décide et concurrence sur C007 :
-
-C'est l'utilisateur (humain) qui le tape au clavier. Si deux secrétaires valident la création de C007 exactement en même temps, le premier enregistrement va réussir. Pour le deuxième, MariaDB va bloquer l'insertion et renvoyer une erreur violente de type "Duplicate Entry" (violation de contrainte d'unicité) qui fera crasher le programme du deuxième utilisateur.
-
-
-
-Le coût de corriger C01 en C001 avec des clés étrangères :
-
-C'est très coûteux et complexe. Si l'identifiant est la clé primaire, il est utilisé comme référence dans toutes les autres tables (Adresse, Contrat, Congés...). Modifier la clé primaire exige de modifier en cascade toutes les lignes correspondantes dans les autres tables, sous peine de détruire l'intégrité de la base.
-
-
-
-Persister deux collaborateurs avec le même ID (que se passe-t-il et quand ?) :
-
-L'application va lever une exception (EntityExistsException ou une erreur SQL de type ConstraintViolationException). Cela se produit exactement au moment du transaction.commit(), car c'est à cet instant précis que l'ordre SQL INSERT est réellement envoyé et vérifié par MariaDB.
-
-
-
-Qu’est-ce qui rendrait une clé primaire plus « propre » ?
-
-La solution est d'utiliser une clé technique (générée automatiquement par la base de données, comme un identifiant numérique 1, 2, 3... avec @GeneratedValue). Cette clé est invisible pour l'utilisateur et ne change jamais. Le vrai matricule "C001" devient alors une simple colonne de texte (avec une règle @Column(unique=true)) qu'on peut modifier librement sans casser les relations entre les tables. (Tu feras ça dans le Challenge B du TP !)
-
-### 7\. 
-
+-Sortez l’appel de augmenterSalaire après la fin du bloc try (l’EntityManager est alors fermé) : l’entité est détachée. La base change-t-elle ? Non, elle ne change pas. Dès que l'on sort du try, l'entityManager se ferme.
+- Le salaire ne change pas car l'exception est levée avant le commit, on se retrouve alors directement dans le bloc catch.
 
 
 ### 8. Retrouver autrement que par identifiant
