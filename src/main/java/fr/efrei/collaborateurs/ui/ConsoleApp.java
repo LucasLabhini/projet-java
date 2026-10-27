@@ -40,6 +40,7 @@ public class ConsoleApp {
                     case "4" -> rechercherParNom();
                     case "5" -> augmenter();
                     case "6" -> listerParLangage();
+                    case "7" -> ajouterTicket();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -66,6 +67,7 @@ public class ConsoleApp {
         System.out.println("4. Rechercher par nom");
         System.out.println("5. Augmenter un salaire");
         System.out.println("6. Programmeurs par langage");
+        System.out.println("7. Ajouter un ticket");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -90,11 +92,13 @@ public class ConsoleApp {
     }
 
     private void ajouterTicket() {
-        String identifiant = lireTexte("Identifiant");
         String titre = lireTexte("Titre");
         Ticket.Priorite priorite = lireEnum("priorite", Ticket.Priorite.class);
-        service.ajouter(new Ticket(identifiant, titre, priorite, assigne));
-        System.out.println("Testeur enregistré.");
+
+        Ticket nouveauTicket = new Ticket(titre, priorite, null);
+
+        service.ajouterTicket(nouveauTicket);
+        System.out.println("Ticket enregistré.");
     }
 
     private void listerSalaireSuperieur() {

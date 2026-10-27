@@ -4,6 +4,7 @@ import fr.efrei.collaborateurs.exception.CollaborateurDejaExistantException;
 import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
 import fr.efrei.collaborateurs.modele.Collaborateur;
 import fr.efrei.collaborateurs.modele.Programmeur;
+import fr.efrei.collaborateurs.modele.Ticket;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
@@ -117,5 +118,13 @@ public class CollaborateurService {
                 throw e; // on ne l'avale pas : l'appelant décide quoi dire à l'utilisateur
             }
         }
+    }
+
+    public void ajouterTicket(Ticket ticket) {
+        dansUneTransaction(em -> {
+            em.persist(ticket);
+            return null;
+        });
+        logger.info("Ticket enregistré");
     }
 }
