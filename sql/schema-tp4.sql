@@ -23,3 +23,13 @@ CREATE TABLE IF NOT EXISTS collaborateur (
     PRIMARY KEY (identifiant),
     CONSTRAINT fk_collaborateur_adresse FOREIGN KEY (adresse_id) REFERENCES adresse (id)
 );
+
+CREATE TABLE IF NOT EXISTS ticket (
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    titre       VARCHAR(255) DEFAULT NULL,
+    priorite    VARCHAR(50)  DEFAULT NULL,
+    statut      VARCHAR(50)  DEFAULT NULL,
+    assigne_id  VARCHAR(10)  DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_ticket_collaborateur FOREIGN KEY (assigne_id) REFERENCES collaborateur (identifiant)
+    );

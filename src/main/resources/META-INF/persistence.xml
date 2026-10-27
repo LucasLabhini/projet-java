@@ -12,6 +12,7 @@
         <class>fr.efrei.collaborateurs.modele.Programmeur</class>
         <class>fr.efrei.collaborateurs.modele.Testeur</class>
         <class>fr.efrei.collaborateurs.modele.Adresse</class>
+        <class>fr.efrei.collaborateurs.modele.Ticket</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
         <properties>

@@ -2,10 +2,7 @@ package fr.efrei.collaborateurs.ui;
 
 import fr.efrei.collaborateurs.exception.CollaborateurDejaExistantException;
 import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
-import fr.efrei.collaborateurs.modele.Adresse;
-import fr.efrei.collaborateurs.modele.Collaborateur;
-import fr.efrei.collaborateurs.modele.Programmeur;
-import fr.efrei.collaborateurs.modele.Testeur;
+import fr.efrei.collaborateurs.modele.*;
 import fr.efrei.collaborateurs.service.CollaborateurService;
 import jakarta.persistence.PersistenceException;
 import org.slf4j.Logger;
@@ -13,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Scanner;
+
 
 /**
  * Seule classe qui dialogue avec l'utilisateur : ses println sont des affichages
@@ -91,6 +89,14 @@ public class ConsoleApp {
         System.out.println("Testeur enregistré.");
     }
 
+    private void ajouterTicket() {
+        String identifiant = lireTexte("Identifiant");
+        String titre = lireTexte("Titre");
+        Ticket.Priorite priorite = lireEnum("priorite", Ticket.Priorite.class);
+        service.ajouter(new Ticket(identifiant, titre, priorite, assigne));
+        System.out.println("Testeur enregistré.");
+    }
+
     private void listerSalaireSuperieur() {
         afficher(service.salaireSuperieurA(lireDecimal("Seuil")));
     }
@@ -141,9 +147,26 @@ public class ConsoleApp {
         }
     }
 
+    private <T extends Enum<T>> T lireEnum(String libelle, Class<T> enumType) {
+        String valeur = lireTexte(libelle);
+
+        try {
+            return Enum.valueOf(enumType, valeur.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new SaisieInvalideException(
+                    "Valeur invalide pour " + libelle + ". " +
+                            "Valeurs possibles : " + java.util.Arrays.toString(enumType.getEnumConstants())
+            );
+        }
+    }
+
+
+
     private static class SaisieInvalideException extends RuntimeException {
         SaisieInvalideException(String message) {
             super(message);
         }
     }
+
+
 }
