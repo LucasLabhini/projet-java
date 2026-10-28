@@ -120,11 +120,5 @@ public class CollaborateurService {
         }
     }
 
-    public void ajouterTicket(Ticket ticket) {
-        dansUneTransaction(em -> {
-            em.persist(ticket);
-            return null;
-        });
-        logger.info("Ticket enregistré");
-    }
+
 }

@@ -4,6 +4,7 @@ import fr.efrei.collaborateurs.exception.CollaborateurDejaExistantException;
 import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
 import fr.efrei.collaborateurs.modele.*;
 import fr.efrei.collaborateurs.service.CollaborateurService;
+import fr.efrei.collaborateurs.service.TicketService;
 import jakarta.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,12 @@ public class ConsoleApp {
     private static final Logger logger = LoggerFactory.getLogger(ConsoleApp.class);
 
     private final CollaborateurService service;
+    private final TicketService ticket;
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsoleApp(CollaborateurService service) {
+    public ConsoleApp(CollaborateurService service, TicketService ticket) {
         this.service = service;
+        this.ticket = ticket;
     }
 
     public void lancer() {
@@ -41,6 +44,7 @@ public class ConsoleApp {
                     case "5" -> augmenter();
                     case "6" -> listerParLangage();
                     case "7" -> ajouterTicket();
+                    case "8" -> listerTickets();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -68,6 +72,7 @@ public class ConsoleApp {
         System.out.println("5. Augmenter un salaire");
         System.out.println("6. Programmeurs par langage");
         System.out.println("7. Ajouter un ticket");
+        System.out.println("8. Afficher tous les tickets");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -97,7 +102,7 @@ public class ConsoleApp {
 
         Ticket nouveauTicket = new Ticket(titre, priorite, null);
 
-        service.ajouterTicket(nouveauTicket);
+        ticket.ajouterTicket(nouveauTicket);
         System.out.println("Ticket enregistré.");
     }
 
@@ -122,6 +127,16 @@ public class ConsoleApp {
 
     private Adresse lireAdresse() {
         return new Adresse(lireTexte("Rue"), lireTexte("Code postal"), lireTexte("Ville"), lireTexte("Pays"));
+    }
+
+    private void listerTickets() {
+        List<Ticket> listeTickets = ticket.tousLesTickets();
+
+        if (listeTickets.isEmpty()) {
+            System.out.println("Aucun ticket trouvé.");
+        } else {
+            listeTickets.forEach(System.out::println);
+        }
     }
 
     private void afficher(List<? extends Collaborateur> liste) {
