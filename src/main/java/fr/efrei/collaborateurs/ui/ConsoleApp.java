@@ -46,6 +46,7 @@ public class ConsoleApp {
                     case "7" -> ajouterTicket();
                     case "8" -> listerTickets();
                     case "9" -> assignerTicket();
+                    case "10" -> listerTicketsCollaborateur();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -75,6 +76,7 @@ public class ConsoleApp {
         System.out.println("7. Ajouter un ticket");
         System.out.println("8. Afficher tous les tickets");
         System.out.println("9. Assigner un ticket à un programmeur");
+        System.out.println("10. Afficher les tickets d'un collaborateur");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -154,6 +156,16 @@ public class ConsoleApp {
 
         ticket.assignerTicket(idTicket, idCollaborateur);
         System.out.println("Ticket assigné avec succès.");
+    }
+
+    private void listerTicketsCollaborateur() {
+        String idCollaborateur = lireTexte("Identifiant du collaborateur (ex: C001)");
+        List<Ticket> liste = ticket.ticketsParCollaborateur(idCollaborateur);
+        if (liste.isEmpty()) {
+            System.out.println("Aucun ticket trouvé pour ce collaborateur.");
+        } else {
+            liste.forEach(System.out::println);
+        }
     }
 
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----

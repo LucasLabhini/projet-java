@@ -72,6 +72,15 @@ public class TicketService {
         }
     }
 
+    public List<Ticket> ticketsParCollaborateur(String collaborateurId) {
+        try (EntityManager em = eMFactory.createEntityManager()) {
+            return em.createQuery(
+                            "select t from Ticket t where t.assigne.identifiant = :id", Ticket.class)
+                    .setParameter("id", collaborateurId)
+                    .getResultList();
+        }
+    }
+
     // ---------- Outils internes ----------
 
     private <T> T dansUneTransaction(Function<EntityManager, T> travail) {
