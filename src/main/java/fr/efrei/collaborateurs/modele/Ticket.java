@@ -62,7 +62,7 @@ public class Ticket {
 
     @Override
     public String toString() {
-        String resp = (assigne != null) ? assigne.getPrenom() + " " + assigne.getNom() : "Non assigné";
-        return String.format("#%d [%s] %s (%s) - Responsable : %s", id, priorite, titre, statut, resp);
+        String responsable = (assigne != null) ? assigne.getPrenom() + " " + assigne.getNom() : "aucun";
+        return "Ticket #" + id + " : " + titre + " (" + priorite + ") - " + statut + " - Responsable : " + responsable;
     }
 }

@@ -45,6 +45,7 @@ public class ConsoleApp {
                     case "6" -> listerParLangage();
                     case "7" -> ajouterTicket();
                     case "8" -> listerTickets();
+                    case "9" -> assignerTicket();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -73,6 +74,7 @@ public class ConsoleApp {
         System.out.println("6. Programmeurs par langage");
         System.out.println("7. Ajouter un ticket");
         System.out.println("8. Afficher tous les tickets");
+        System.out.println("9. Assigner un ticket à un programmeur");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -146,6 +148,14 @@ public class ConsoleApp {
         liste.forEach(System.out::println);
     }
 
+    private void assignerTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
+        String idCollaborateur = lireTexte("Identifiant du programmeur (ex: C001)");
+
+        ticket.assignerTicket(idTicket, idCollaborateur);
+        System.out.println("Ticket assigné avec succès.");
+    }
+
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----
 
     private String lireTexte(String libelle) {
@@ -179,13 +189,9 @@ public class ConsoleApp {
         }
     }
 
-
-
     private static class SaisieInvalideException extends RuntimeException {
         SaisieInvalideException(String message) {
             super(message);
         }
     }
-
-
 }

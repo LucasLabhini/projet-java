@@ -1,11 +1,15 @@
 package fr.efrei.collaborateurs.service;
 
+import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
+import fr.efrei.collaborateurs.modele.Collaborateur;
+import fr.efrei.collaborateurs.modele.Programmeur;
 import fr.efrei.collaborateurs.modele.Ticket;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.function.Function;
 
@@ -13,7 +17,9 @@ public class TicketService {
     private static final Logger logger = LoggerFactory.getLogger(TicketService.class);
     private final EntityManagerFactory eMFactory;
 
-    public TicketService(EntityManagerFactory emf) { this.eMFactory = emf; }
+    public TicketService(EntityManagerFactory emf) {
+        this.eMFactory = emf;
+    }
 
     // ---------- Écritures (dans une transaction) ----------
 
@@ -25,6 +31,30 @@ public class TicketService {
         logger.info("Ticket enregistré");
     }
 
+    public void assignerTicket(Long ticketId, String collaborateurId) {
+        dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, ticketId);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+            }
+
+            Collaborateur c = em.find(Collaborateur.class, collaborateurId);
+            if (c == null) {
+                throw new CollaborateurIntrouvableException(collaborateurId);
+            }
+
+            if (!(c instanceof Programmeur)) {
+                throw new IllegalArgumentException("Un ticket ne peut être assigné qu'à un Programmeur (ce collaborateur est un " + c.getMetier() + ")");
+            }
+
+            if (t.getStatut() != Ticket.Statut.A_FAIRE) {
+                throw new IllegalArgumentException("Un ticket ne peut être assigné que lorsqu'il est à l'état À FAIRE");
+            }
+
+            t.setAssigne(c);
+            return null;
+        });
+    }
 
     // ---------- Lectures ----------
 
