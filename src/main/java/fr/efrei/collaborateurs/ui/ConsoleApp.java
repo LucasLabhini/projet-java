@@ -100,7 +100,7 @@ public class ConsoleApp {
         String titre = lireTexte("Titre");
         Ticket.Priorite priorite = lireEnum("priorite", Ticket.Priorite.class);
 
-        Ticket nouveauTicket = new Ticket(titre, priorite, null);
+        Ticket nouveauTicket = new Ticket(titre, priorite);
 
         ticket.ajouterTicket(nouveauTicket);
         System.out.println("Ticket enregistré.");
