@@ -33,3 +33,30 @@ CREATE TABLE IF NOT EXISTS ticket (
     PRIMARY KEY (id),
     CONSTRAINT fk_ticket_collaborateur FOREIGN KEY (assigne_id) REFERENCES collaborateur (identifiant)
     );
+
+-- Adresses
+INSERT INTO adresse (id, rue, code_postal, ville, pays) VALUES
+(1, '12 Rue de la Paix', '75002', 'Paris', 'France'),
+(2, '8 Avenue des Fleurs', '69001', 'Lyon', 'France'),
+(3, '5 Place du Capitole', '31000', 'Toulouse', 'France'),
+(4, '14 Boulevard Haussmann', '75009', 'Paris', 'France'),
+(5, '3 Rue Royale', '44000', 'Nantes', 'France'),
+(6, '20 Quai des Chartrons', '33000', 'Bordeaux', 'France');
+
+-- Collaborateurs
+INSERT INTO collaborateur (identifiant, metier, prenom, nom, salaire, langage_prefere, adresse_id) VALUES
+('C001', 'Programmeur', 'Alice', 'Martin', 42000, 'Java', 1),
+('C002', 'Programmeur', 'Alex', 'Dupont', 44500, 'Python', 2),
+('C003', 'Testeur', 'Chloé', 'Bernard', 39000, NULL, 3),
+('C004', 'Programmeur', 'Nora', 'Diallo', 47000, 'Java', 4),
+('C005', 'Testeur', 'Hugo', 'Petit', 41000, NULL, 5),
+('C006', 'Programmeur', 'Lina', 'Moreau', 45500, 'Kotlin', 6);
+
+-- Tickets
+INSERT INTO ticket (titre, priorite, statut, assigne_id) VALUES
+('Corriger l export PDF', 'HAUTE', 'A_FAIRE', NULL),
+('Ajouter la recherche par nom', 'NORMALE', 'A_FAIRE', NULL),
+('Mettre a jour la documentation', 'BASSE', 'EN_COURS', 'C001'),
+('Optimiser les requetes SQL', 'HAUTE', 'EN_COURS', 'C002'),
+('Tester l interface utilisateur', 'NORMALE', 'A_VALIDER', 'C004'),
+('Corriger le bug de connexion', 'BASSE', 'TERMINE', 'C006');
