@@ -53,7 +53,7 @@ public class ConsoleApp {
             } catch (CollaborateurDejaExistantException e) {
                 System.out.println("Ce identifiant est déjà pris (" + e.identifiant() + "). Choisissez-en un autre.");
             } catch (CollaborateurIntrouvableException e) {
-                System.out.println("Aucun collaborateur n'a le identifiant " + e.identifiant() + ".");
+                System.out.println("Aucun collaborateur n'a l'identifiant " + e.identifiant() + ".");
             } catch (SaisieInvalideException | IllegalArgumentException e) {
                 System.out.println("Saisie refusée : " + e.getMessage());
             } catch (PersistenceException e) {
@@ -73,7 +73,7 @@ public class ConsoleApp {
         System.out.println("4. Rechercher par nom");
         System.out.println("5. Augmenter un salaire");
         System.out.println("6. Programmeurs par langage");
-        System.out.println("7. Ajouter un ticket");
+        System.out.println("7. Créer un ticket");
         System.out.println("8. Afficher tous les tickets");
         System.out.println("9. Assigner un ticket à un programmeur");
         System.out.println("10. Afficher les tickets d'un collaborateur");
