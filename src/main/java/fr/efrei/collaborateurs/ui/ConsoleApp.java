@@ -48,6 +48,7 @@ public class ConsoleApp {
                     case "9" -> assignerTicket();
                     case "10" -> listerTicketsCollaborateur();
                     case "11" -> ticketsParStatut();
+                    case "12"
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -171,21 +172,7 @@ public class ConsoleApp {
     }
 
     private void ticketsParStatut() {
-        System.out.println("1. À faire");
-        System.out.println("2. En cours");
-        System.out.println("3. À valider");
-        System.out.println("4. Terminé");
-        System.out.print("Votre choix : ");
-
-        String valeur = scanner.nextLine().trim();
-
-        Ticket.Statut statut = switch (valeur) {
-            case "1" -> Ticket.Statut.A_FAIRE;
-            case "2" -> Ticket.Statut.EN_COURS;
-            case "3" -> Ticket.Statut.A_VALIDER;
-            case "4" -> Ticket.Statut.TERMINE;
-            default -> throw new SaisieInvalideException("Choix de statut invalide.");
-        };
+        Ticket.Statut statut = lireStatut();
 
         List<Ticket> liste = ticket.ticketsParStatut(statut);
         if (liste.isEmpty()) {
@@ -193,6 +180,13 @@ public class ConsoleApp {
         } else {
             liste.forEach(System.out::println);
         }
+    }
+
+    private void augmenter() {
+        String status = lireTexte("Statut");
+        double pourcentage = lireDecimal("Pourcentage d'augmentation (10 = +10 %)");
+        double nouveau = service.augmenterSalaire(identifiant, pourcentage);
+        System.out.printf("Nouveau salaire : %.2f EUR%n", nouveau);
     }
 
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----
@@ -213,6 +207,26 @@ public class ConsoleApp {
         } catch (NumberFormatException e) {
             throw new SaisieInvalideException("\"" + texte + "\" n'est pas un nombre");
         }
+    }
+
+    private Ticket.Statut lireStatut(){
+        System.out.println("1. À faire");
+        System.out.println("2. En cours");
+        System.out.println("3. À valider");
+        System.out.println("4. Terminé");
+        System.out.print("Votre choix : ");
+
+        String valeur = scanner.nextLine().trim();
+
+        Ticket.Statut statut = switch (valeur) {
+            case "1" -> Ticket.Statut.A_FAIRE;
+            case "2" -> Ticket.Statut.EN_COURS;
+            case "3" -> Ticket.Statut.A_VALIDER;
+            case "4" -> Ticket.Statut.TERMINE;
+            default -> throw new SaisieInvalideException("Choix de statut invalide.");
+        };
+
+        return statut;
     }
 
     private <T extends Enum<T>> T lireEnum(String libelle, Class<T> enumType) {
