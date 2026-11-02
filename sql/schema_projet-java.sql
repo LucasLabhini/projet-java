@@ -1,7 +1,7 @@
 -- Schéma de RÉFÉRENCE (correction) : équivalent à ce que Hibernate génère
 -- avec hibernate.hbm2ddl.auto=update. Cible : MariaDB / MySQL (XAMPP).
-CREATE DATABASE IF NOT EXISTS efrei_tp4 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE efrei_tp4;
+CREATE DATABASE IF NOT EXISTS `projet-java` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `projet-java`;
 
 CREATE TABLE IF NOT EXISTS adresse (
     id          BIGINT       NOT NULL AUTO_INCREMENT,

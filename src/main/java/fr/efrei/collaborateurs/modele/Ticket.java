@@ -54,11 +54,20 @@ public class Ticket {
     public String getTitre() { return titre; }
     public Priorite getPriorite() { return priorite; }
     public Statut getStatut() { return statut; }
-    public void setStatut(Statut statut) { this.statut = statut; }
     public Collaborateur getAssigne() { return assigne; }
 
     public void setAssigne(Collaborateur assigne) {
         this.assigne = assigne;
+    }
+
+    public void faireAvancerStatut() {
+        if (this.statut == Statut.A_FAIRE) {
+            this.statut = Statut.EN_COURS;
+        } else if (this.statut == Statut.EN_COURS) {
+            this.statut = Statut.A_VALIDER;
+        }  else if (this.statut == Statut.A_VALIDER) {
+            this.statut = Statut.TERMINE;
+        }
     }
 
     @Override

@@ -1,9 +1,9 @@
 -- =========================================================
--- Programmation en Java — TP4 / Préparation de la base
+-- Programmation en Java — projet-java / Préparation de la base
 -- Cible : MariaDB ou MySQL (outil préconisé : XAMPP + phpMyAdmin)
 --
 -- Ce script :
---   1. crée la base « efrei_tp4 » si elle n'existe pas ;
+--   1. crée la base « projet-java » si elle n'existe pas ;
 --   2. crée et remplit la table de DÉMONSTRATION « collaborateur_demo »,
 --      utilisée à la mission 10 (génération d'une entité par IntelliJ).
 --
@@ -17,11 +17,11 @@
 
 SET NAMES utf8mb4;
 
-CREATE DATABASE IF NOT EXISTS efrei_tp4
+CREATE DATABASE IF NOT EXISTS projet-java
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
-USE efrei_tp4;
+USE projet-java;
 
 DROP TABLE IF EXISTS collaborateur_demo;
 

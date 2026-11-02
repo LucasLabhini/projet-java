@@ -48,7 +48,6 @@ public class ConsoleApp {
                     case "9" -> assignerTicket();
                     case "10" -> listerTicketsCollaborateur();
                     case "11" -> ticketsParStatut();
-                    case "12"
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -182,11 +181,8 @@ public class ConsoleApp {
         }
     }
 
-    private void augmenter() {
-        String status = lireTexte("Statut");
-        double pourcentage = lireDecimal("Pourcentage d'augmentation (10 = +10 %)");
-        double nouveau = service.augmenterSalaire(identifiant, pourcentage);
-        System.out.printf("Nouveau salaire : %.2f EUR%n", nouveau);
+    private void faireAvancerStatut() {
+        faireAvancerStatut();
     }
 
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----

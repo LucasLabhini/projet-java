@@ -56,7 +56,11 @@ public class TicketService {
         });
     }
 
-    // ---------- Lectures ----------
+    public void faireAvancerStatut(String id_ticket) {
+
+    }
+
+        // ---------- Lectures ----------
 
     public List<Ticket> tousLesTickets() {
         try (EntityManager em = eMFactory.createEntityManager()) {
