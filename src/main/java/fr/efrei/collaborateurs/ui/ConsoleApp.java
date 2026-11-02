@@ -47,6 +47,7 @@ public class ConsoleApp {
                     case "8" -> listerTickets();
                     case "9" -> assignerTicket();
                     case "10" -> listerTicketsCollaborateur();
+                    case "11" -> ticketsParStatut();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -77,6 +78,7 @@ public class ConsoleApp {
         System.out.println("8. Afficher tous les tickets");
         System.out.println("9. Assigner un ticket à un programmeur");
         System.out.println("10. Afficher les tickets d'un collaborateur");
+        System.out.println("11. Afficher les tickets par statut");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -163,6 +165,31 @@ public class ConsoleApp {
         List<Ticket> liste = ticket.ticketsParCollaborateur(idCollaborateur);
         if (liste.isEmpty()) {
             System.out.println("Aucun ticket trouvé pour ce collaborateur.");
+        } else {
+            liste.forEach(System.out::println);
+        }
+    }
+
+    private void ticketsParStatut() {
+        System.out.println("1. À faire");
+        System.out.println("2. En cours");
+        System.out.println("3. À valider");
+        System.out.println("4. Terminé");
+        System.out.print("Votre choix : ");
+
+        String valeur = scanner.nextLine().trim();
+
+        Ticket.Statut statut = switch (valeur) {
+            case "1" -> Ticket.Statut.A_FAIRE;
+            case "2" -> Ticket.Statut.EN_COURS;
+            case "3" -> Ticket.Statut.A_VALIDER;
+            case "4" -> Ticket.Statut.TERMINE;
+            default -> throw new SaisieInvalideException("Choix de statut invalide.");
+        };
+
+        List<Ticket> liste = ticket.ticketsParStatut(statut);
+        if (liste.isEmpty()) {
+            System.out.println("Aucun ticket trouvé pour ce statut.");
         } else {
             liste.forEach(System.out::println);
         }
