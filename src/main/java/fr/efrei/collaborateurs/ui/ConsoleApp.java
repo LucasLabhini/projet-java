@@ -50,9 +50,10 @@ public class ConsoleApp {
                     case "11" -> ticketsParStatut();
                     case "12" -> demarrerTicket();
                     case "13" -> demanderValidationTicket();
-                    case "14" -> terminerTicket();
-                    case "15" -> modifierTicket();
-                    case "16" -> supprimerTicket();
+                    case "14" -> renvoyerTicket();
+                    case "15" -> terminerTicket();
+                    case "16" -> modifierTicket();
+                    case "17" -> supprimerTicket();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -86,9 +87,10 @@ public class ConsoleApp {
         System.out.println("11. Afficher les tickets par statut");
         System.out.println("12. Démarrer un ticket");
         System.out.println("13. Demander la validation d'un ticket");
-        System.out.println("14. Terminer un ticket");
-        System.out.println("15. Modifier le titre ou la priorité d'un ticket");
-        System.out.println("16. Supprimer un ticket");
+        System.out.println("14. Renvoyer un ticket en cours");
+        System.out.println("15. Terminer un ticket");
+        System.out.println("16. Modifier le titre ou la priorité d'un ticket");
+        System.out.println("17. Supprimer un ticket");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -201,6 +203,13 @@ public class ConsoleApp {
         long idTicket = (long) lireDecimal("ID du ticket");
         ticket.demanderValidationTicket(idTicket);
         System.out.println("Le ticket " + idTicket + " est désormais en attente de validation.");
+    }
+
+    private void renvoyerTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
+        String idTesteur = lireTexte("Identifiant du testeur (ex: C003)");
+        ticket.renvoyerTicket(idTicket, idTesteur);
+        System.out.println("Le ticket " + idTicket + " a été renvoyé en cours.");
     }
 
     private void terminerTicket() {
