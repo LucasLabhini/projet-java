@@ -84,6 +84,13 @@ public class Ticket {
         this.statut = Statut.TERMINE;
     }
 
+    public void renvoyerEnCours() {
+        if (this.statut != Statut.A_VALIDER) {
+            throw new IllegalStateException("Seul un ticket à l'état 'À valider' peut être renvoyé en cours.");
+        }
+        this.statut = Statut.EN_COURS;
+    }
+
     @Override
     public String toString() {
         String responsable = (assigne != null) ? assigne.getPrenom() + " " + assigne.getNom() : "aucun";

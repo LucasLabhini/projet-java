@@ -58,7 +58,7 @@ public class ConsoleApp {
                 System.out.println("Ce identifiant est déjà pris (" + e.identifiant() + "). Choisissez-en un autre.");
             } catch (CollaborateurIntrouvableException e) {
                 System.out.println("Aucun collaborateur n'a l'identifiant " + e.identifiant() + ".");
-            } catch (SaisieInvalideException | IllegalArgumentException e) {
+            } catch (SaisieInvalideException | IllegalArgumentException | IllegalStateException e) {
                 System.out.println("Saisie refusée : " + e.getMessage());
             } catch (PersistenceException e) {
                 // Problème technique : détail dans les logs, message sobre pour l'utilisateur
@@ -201,10 +201,10 @@ public class ConsoleApp {
 
     private void terminerTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
-        ticket.terminerTicket(idTicket);
-        System.out.println("Le ticket " + idTicket + " est maintenant terminé.");
+        String idTesteur = lireTexte("Identifiant du testeur (ex: C003)");
+        ticket.terminerTicket(idTicket, idTesteur);
+        System.out.println("Le ticket " + idTicket + " est désormais terminé.");
     }
-
 
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----
 

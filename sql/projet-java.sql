@@ -1,60 +1,62 @@
--- =========================================================
--- Programmation en Java — projet-java / Préparation de la base
--- Cible : MariaDB ou MySQL (outil préconisé : XAMPP + phpMyAdmin)
---
--- Ce script :
---   1. crée la base « projet-java » si elle n'existe pas ;
---   2. crée et remplit la table de DÉMONSTRATION « collaborateur_demo »,
---      utilisée à la mission 10 (génération d'une entité par IntelliJ).
---
--- Il ne crée PAS les tables de votre application (« collaborateur »,
--- « adresse ») : c'est Hibernate qui s'en charge (hbm2ddl.auto=update).
--- Il ne crée volontairement ni relation ni clé étrangère.
---
--- Utilisation avec XAMPP : phpMyAdmin → onglet « Importer » → choisir ce fichier.
--- Le script peut être rejoué sans risque : seule « collaborateur_demo » est recréée.
--- =========================================================
+-- Schéma de RÉFÉRENCE (correction) : équivalent à ce que Hibernate génère
+-- avec hibernate.hbm2ddl.auto=update. Cible : MariaDB / MySQL (XAMPP).
+CREATE DATABASE IF NOT EXISTS `projet-java` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `projet-java`;
 
-SET NAMES utf8mb4;
+CREATE TABLE IF NOT EXISTS adresse (
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    rue         VARCHAR(100) NOT NULL,
+    code_postal VARCHAR(10)  NOT NULL,
+    ville       VARCHAR(60)  NOT NULL,
+    pays        VARCHAR(60)  NOT NULL,
+    PRIMARY KEY (id)
+);
 
-CREATE DATABASE IF NOT EXISTS projet-java
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS collaborateur (
+    identifiant     VARCHAR(10) NOT NULL,
+    metier          VARCHAR(40) NOT NULL,   -- discriminant : 'Programmeur' ou 'Testeur'
+    prenom          VARCHAR(50) NOT NULL,
+    nom             VARCHAR(50) NOT NULL,
+    salaire         DOUBLE      NOT NULL,
+    langage_prefere VARCHAR(40) NULL,       -- NULL pour un Testeur
+    adresse_id      BIGINT      NOT NULL,
+    PRIMARY KEY (identifiant),
+    CONSTRAINT fk_collaborateur_adresse FOREIGN KEY (adresse_id) REFERENCES adresse (id)
+);
 
-USE projet-java;
+CREATE TABLE IF NOT EXISTS ticket (
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    titre       VARCHAR(255) DEFAULT NULL,
+    priorite    VARCHAR(50)  DEFAULT NULL,
+    statut      VARCHAR(50)  DEFAULT NULL,
+    assigne_id  VARCHAR(10)  DEFAULT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_ticket_collaborateur FOREIGN KEY (assigne_id) REFERENCES collaborateur (identifiant)
+    );
 
-DROP TABLE IF EXISTS collaborateur_demo;
+-- Adresses
+INSERT INTO adresse (id, rue, code_postal, ville, pays) VALUES
+(1, '12 Rue de la Paix', '75002', 'Paris', 'France'),
+(2, '8 Avenue des Fleurs', '69001', 'Lyon', 'France'),
+(3, '5 Place du Capitole', '31000', 'Toulouse', 'France'),
+(4, '14 Boulevard Haussmann', '75009', 'Paris', 'France'),
+(5, '3 Rue Royale', '44000', 'Nantes', 'France'),
+(6, '20 Quai des Chartrons', '33000', 'Bordeaux', 'France');
 
-CREATE TABLE collaborateur_demo (
-    id_collaborateur  VARCHAR(10) NOT NULL,   -- identifiant métier (C001...)
-    prenom            VARCHAR(50) NOT NULL,
-    nom               VARCHAR(50) NOT NULL,
-    metier            VARCHAR(40) NOT NULL,   -- 'Programmeur' ou 'Testeur'
-    salaire           DOUBLE      NOT NULL,
-    langage_prefere   VARCHAR(40) NULL,       -- NULL pour un Testeur
+-- Collaborateurs
+INSERT INTO collaborateur (identifiant, metier, prenom, nom, salaire, langage_prefere, adresse_id) VALUES
+('C001', 'Programmeur', 'Alice', 'Martin', 42000, 'Java', 1),
+('C002', 'Programmeur', 'Alex', 'Dupont', 44500, 'Python', 2),
+('C003', 'Testeur', 'Chloé', 'Bernard', 39000, NULL, 3),
+('C004', 'Programmeur', 'Nora', 'Diallo', 47000, 'Java', 4),
+('C005', 'Testeur', 'Hugo', 'Petit', 41000, NULL, 5),
+('C006', 'Programmeur', 'Lina', 'Moreau', 45500, 'Kotlin', 6);
 
-    PRIMARY KEY (id_collaborateur)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO collaborateur_demo
-    (id_collaborateur, prenom, nom, metier, salaire, langage_prefere)
-VALUES
-    ('C001', 'Alice', 'Martin',  'Programmeur', 42000, 'Java'),
-    ('C002', 'Alex',  'Dupont',  'Programmeur', 44500, 'Python'),
-    ('C003', 'Chloé', 'Bernard', 'Testeur',     39000, NULL),
-    ('C004', 'Nora',  'Diallo',  'Programmeur', 47000, 'Java'),
-    ('C005', 'Hugo',  'Petit',   'Testeur',     41000, NULL),
-    ('C006', 'Lina',  'Moreau',  'Programmeur', 45500, 'Kotlin');
-
--- ---------------------------------------------------------
--- Vérifications (à exécuter dans l'onglet « SQL » de phpMyAdmin)
--- ---------------------------------------------------------
-
--- Les 6 lignes attendues
-SELECT * FROM collaborateur_demo ORDER BY id_collaborateur;
-
--- Équivalent SQL de la requête JPQL de la mission 8 : attendu Nora et Lina
-SELECT * FROM collaborateur_demo WHERE salaire > 45000;
-
--- Recherche sur le nom, sans tenir compte de la casse : attendu Alice Martin
-SELECT * FROM collaborateur_demo WHERE LOWER(nom) LIKE '%mar%';
+-- Tickets
+INSERT INTO ticket (titre, priorite, statut, assigne_id) VALUES
+('Corriger l export PDF', 'HAUTE', 'A_FAIRE', NULL),
+('Ajouter la recherche par nom', 'NORMALE', 'A_FAIRE', NULL),
+('Mettre a jour la documentation', 'BASSE', 'EN_COURS', 'C001'),
+('Optimiser les requetes SQL', 'HAUTE', 'EN_COURS', 'C002'),
+('Tester l interface utilisateur', 'NORMALE', 'A_VALIDER', 'C004'),
+('Corriger le bug de connexion', 'BASSE', 'TERMINE', 'C006');
