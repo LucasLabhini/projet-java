@@ -48,6 +48,9 @@ public class ConsoleApp {
                     case "9" -> assignerTicket();
                     case "10" -> listerTicketsCollaborateur();
                     case "11" -> ticketsParStatut();
+                    case "12" -> demarrerTicket();
+                    case "13" -> demanderValidationTicket();
+                    case "14" -> terminerTicket();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -79,6 +82,9 @@ public class ConsoleApp {
         System.out.println("9. Assigner un ticket à un programmeur");
         System.out.println("10. Afficher les tickets d'un collaborateur");
         System.out.println("11. Afficher les tickets par statut");
+        System.out.println("12. Démarrer un ticket");
+        System.out.println("13. Demander la validation d'un ticket");
+        System.out.println("14. Terminer un ticket");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -157,7 +163,7 @@ public class ConsoleApp {
         String idCollaborateur = lireTexte("Identifiant du programmeur (ex: C001)");
 
         ticket.assignerTicket(idTicket, idCollaborateur);
-        System.out.println("Ticket assigné avec succès.");
+        System.out.println("Ticket assigné au collaborateur " + idCollaborateur + " avec succès.");
     }
 
     private void listerTicketsCollaborateur() {
@@ -181,9 +187,24 @@ public class ConsoleApp {
         }
     }
 
-    private void faireAvancerStatut() {
-        faireAvancerStatut();
+    private void demarrerTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
+        ticket.demarrerTicket(idTicket);
+        System.out.println("Le ticket " + idTicket + " est bien démarré.");
     }
+
+    private void demanderValidationTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
+        ticket.demanderValidationTicket(idTicket);
+        System.out.println("Le ticket " + idTicket + " est désormais en attente de validation.");
+    }
+
+    private void terminerTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
+        ticket.terminerTicket(idTicket);
+        System.out.println("Le ticket " + idTicket + " est maintenant terminé.");
+    }
+
 
     // ---- Lecture : une erreur de saisie n'est pas une règle métier ----
 

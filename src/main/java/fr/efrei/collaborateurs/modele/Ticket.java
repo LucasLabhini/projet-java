@@ -60,14 +60,28 @@ public class Ticket {
         this.assigne = assigne;
     }
 
-    public void faireAvancerStatut() {
-        if (this.statut == Statut.A_FAIRE) {
-            this.statut = Statut.EN_COURS;
-        } else if (this.statut == Statut.EN_COURS) {
-            this.statut = Statut.A_VALIDER;
-        }  else if (this.statut == Statut.A_VALIDER) {
-            this.statut = Statut.TERMINE;
+    public void demarrer() {
+        if (this.statut != Statut.A_FAIRE) {
+            throw new IllegalStateException("Seul un ticket À FAIRE peut être démarré.");
         }
+        if (this.assigne == null) {
+            throw new IllegalStateException("Impossible de démarrer un ticket sans responsable.");
+        }
+        this.statut = Statut.EN_COURS;
+    }
+
+    public void demanderValidation() {
+        if (this.statut != Statut.EN_COURS) {
+            throw new IllegalStateException("Le ticket doit être EN_COURS pour demander une validation.");
+        }
+        this.statut = Statut.A_VALIDER;
+    }
+
+    public void terminer() {
+        if (this.statut != Statut.A_VALIDER) {
+            throw new IllegalStateException("Le ticket doit d'abord être validé avant d'être terminé.");
+        }
+        this.statut = Statut.TERMINE;
     }
 
     @Override
@@ -75,4 +89,6 @@ public class Ticket {
         String responsable = (assigne != null) ? assigne.getPrenom() + " " + assigne.getNom() : "aucun";
         return "Ticket #" + id + " : " + titre + " (" + priorite + ") - " + statut + " - Responsable : " + responsable;
     }
+
+
 }

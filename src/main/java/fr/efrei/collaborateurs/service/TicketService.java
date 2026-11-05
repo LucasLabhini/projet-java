@@ -56,7 +56,47 @@ public class TicketService {
         });
     }
 
-    public void faireAvancerStatut(String id_ticket) {
+    public Ticket.Statut demarrerTicket(Long id_ticket) {
+        return dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, id_ticket);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+            }
+            Ticket.Statut avant = t.getStatut();
+            t.demarrer();
+            logger.debug("Statut de {} : {} -> {}", id_ticket, avant, t.getStatut());
+            return t.getStatut();
+        });
+
+    }
+
+    public Ticket.Statut demanderValidationTicket(Long id_ticket) {
+        return dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, id_ticket);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+            }
+            Ticket.Statut avant = t.getStatut();
+            t.demanderValidation();
+            logger.debug("Statut de {} : {} -> {}", id_ticket, avant, t.getStatut());
+            return t.getStatut();
+        });
+
+    }
+
+    public Ticket.Statut terminerTicket(Long id_ticket) {
+        return dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, id_ticket);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+            }
+
+
+            Ticket.Statut avant = t.getStatut();
+            t.terminer();
+            logger.debug("Statut de {} : {} -> {}", id_ticket, avant, t.getStatut());
+            return t.getStatut();
+        });
 
     }
 
