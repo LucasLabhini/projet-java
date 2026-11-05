@@ -133,6 +133,31 @@ public class TicketService {
         });
     }
 
+    public void modifierTicket(Long ticketId, String nouveauTitre, Ticket.Priorite nouvellePriorite) {
+        dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, ticketId);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+            }
+            t.modifier(nouveauTitre, nouvellePriorite);
+            return null;
+        });
+    }
+
+    public void supprimerTicket(Long ticketId) {
+        dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, ticketId);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+            }
+            if (t.getStatut() != Ticket.Statut.A_FAIRE) {
+                throw new IllegalStateException("Un ticket ne peut être supprimé que s'il est encore à l'état 'À faire'.");
+            }
+            em.remove(t);
+            return null;
+        });
+    }
+
     // ---------- Lectures ----------
     public List<Ticket> tousLesTickets() {
         try (EntityManager em = eMFactory.createEntityManager()) {

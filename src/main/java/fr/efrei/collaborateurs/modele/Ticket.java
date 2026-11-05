@@ -91,6 +91,17 @@ public class Ticket {
         this.statut = Statut.EN_COURS;
     }
 
+    public void modifier(String nouveauTitre, Priorite nouvellePriorite) {
+        if (this.statut == Statut.TERMINE) {
+            throw new IllegalStateException("Un ticket terminé ne peut plus être modifié.");
+        }
+        if (nouveauTitre == null || nouveauTitre.isBlank()) {
+            throw new IllegalArgumentException("Le titre du ticket ne peut pas être vide.");
+        }
+        this.titre = nouveauTitre.trim();
+        this.priorite = nouvellePriorite;
+    }
+
     @Override
     public String toString() {
         String responsable = (assigne != null) ? assigne.getPrenom() + " " + assigne.getNom() : "aucun";
