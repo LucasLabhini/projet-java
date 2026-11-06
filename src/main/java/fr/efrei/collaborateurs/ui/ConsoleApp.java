@@ -52,8 +52,9 @@ public class ConsoleApp {
                     case "13" -> demanderValidationTicket();
                     case "14" -> renvoyerTicket();
                     case "15" -> terminerTicket();
-                    case "16" -> modifierTicket();
-                    case "17" -> supprimerTicket();
+                    case "16" -> modifierTitreTicket();
+                    case "17" -> modifierPrioriteTicket();
+                    case "18" -> supprimerTicket();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
@@ -89,8 +90,9 @@ public class ConsoleApp {
         System.out.println("13. Demander la validation d'un ticket");
         System.out.println("14. Renvoyer un ticket en cours");
         System.out.println("15. Terminer un ticket");
-        System.out.println("16. Modifier le titre ou la priorité d'un ticket");
-        System.out.println("17. Supprimer un ticket");
+        System.out.println("16. Modifier le titre d'un ticket");
+        System.out.println("17. Modifier la priorité d'un ticket");
+        System.out.println("18. Supprimer un ticket");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -219,12 +221,18 @@ public class ConsoleApp {
         System.out.println("Le ticket " + idTicket + " est désormais terminé.");
     }
 
-    private void modifierTicket() {
+    private void modifierTitreTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
         String nouveauTitre = lireTexte("Nouveau titre");
+        ticket.modifierTitreTicket(idTicket, nouveauTitre);
+        System.out.println("Titre du ticket " + idTicket + " modifié avec succès.");
+    }
+
+    private void modifierPrioriteTicket() {
+        long idTicket = (long) lireDecimal("ID du ticket");
         Ticket.Priorite nouvellePriorite = lireEnum("Nouvelle priorité", Ticket.Priorite.class);
-        ticket.modifierTicket(idTicket, nouveauTitre, nouvellePriorite);
-        System.out.println("Ticket " + idTicket + " modifié avec succès.");
+        ticket.modifierPrioriteTicket(idTicket, nouvellePriorite);
+        System.out.println("Priorité du ticket " + idTicket + " modifiée avec succès.");
     }
 
     private void supprimerTicket() {

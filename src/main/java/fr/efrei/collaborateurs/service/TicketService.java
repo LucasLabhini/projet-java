@@ -133,13 +133,24 @@ public class TicketService {
         });
     }
 
-    public void modifierTicket(Long ticketId, String nouveauTitre, Ticket.Priorite nouvellePriorite) {
+    public void modifierTitreTicket(Long ticketId, String nouveauTitre) {
         dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, ticketId);
             if (t == null) {
                 throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
             }
-            t.modifier(nouveauTitre, nouvellePriorite);
+            t.modifierTitre(nouveauTitre);
+            return null;
+        });
+    }
+
+    public void modifierPrioriteTicket(Long ticketId, Ticket.Priorite nouvellePriorite) {
+        dansUneTransaction(em -> {
+            Ticket t = em.find(Ticket.class, ticketId);
+            if (t == null) {
+                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+            }
+            t.modifierPriorite(nouvellePriorite);
             return null;
         });
     }

@@ -91,7 +91,7 @@ public class Ticket {
         this.statut = Statut.EN_COURS;
     }
 
-    public void modifier(String nouveauTitre, Priorite nouvellePriorite) {
+    public void modifierTitre(String nouveauTitre) {
         if (this.statut == Statut.TERMINE) {
             throw new IllegalStateException("Un ticket terminé ne peut plus être modifié.");
         }
@@ -99,6 +99,15 @@ public class Ticket {
             throw new IllegalArgumentException("Le titre du ticket ne peut pas être vide.");
         }
         this.titre = nouveauTitre.trim();
+    }
+
+    public void modifierPriorite(Priorite nouvellePriorite) {
+        if (this.statut == Statut.TERMINE) {
+            throw new IllegalStateException("Un ticket terminé ne peut plus être modifié.");
+        }
+        if (nouvellePriorite == null ) {
+            throw new IllegalArgumentException("La priorité du ticket ne peut pas être vide.");
+        }
         this.priorite = nouvellePriorite;
     }
 
