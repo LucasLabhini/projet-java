@@ -1,15 +1,15 @@
 # Journal de bord — Projet Java (Jalon 2 & Livraison Finale)
 
-**Binôme :** Lucas & Inès  
-**Projet :** Gestion des Collaborateurs et des Tickets (EFREI)
-
 ---
 
-## 1. Démarche
+### 1. Démarche
+Nous avons, dans un premier temps, intégré l'entité `Ticket` et ses énumérations (`Priorite`, `Statut`), mis à jour le script SQL de création pour correspondre à notre modèle Java.  
 
-Pour ce Jalon 2, nous avons complété la gestion des tickets et sécurisé l'ensemble du cycle de vie de l'application.
+Nous avons ensuite créé un `TicketService` pour isoler la logique liée aux tickets (création, assignation, consultation), séparant ainsi les responsabilités de `CollaborateurService` et de l'interface console `ConsoleApp`.  
 
-### Éléments conservés du TP4
+Enfin, nous avons implémenté les règles spécifiques (ex: assignation réservée aux programmeurs, statut initial `A_FAIRE`).
+
+#### Éléments conservés du TP4
 * **Héritage et polymorphisme :** Nous réutilisons la hiérarchie `Collaborateur` (`Programmeur` et `Testeur`). Seul un programmeur peut recevoir un ticket, et seul un testeur peut le valider ou le renvoyer.
 * **Exceptions métier :** Nous levons des exceptions (`IllegalArgumentException`, `IllegalStateException`) au lieu d'afficher des erreurs directement dans les services. Les erreurs sont attrapées proprement dans `ConsoleApp`.
 * **Architecture en couches :** Séparation claire entre l'interface utilisateur (`ConsoleApp`), les services (`TicketService`, `CollaborateurService`) et la persistance (JPA / Hibernate).
