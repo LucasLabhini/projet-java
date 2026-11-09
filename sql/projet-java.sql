@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS collaborateur (
 CREATE TABLE IF NOT EXISTS ticket (
     id          BIGINT       NOT NULL AUTO_INCREMENT,
     titre       VARCHAR(255) DEFAULT NULL,
-    priorite    VARCHAR(50)  DEFAULT NULL,
+    priorite    INT  DEFAULT NULL,
     statut      VARCHAR(50)  DEFAULT NULL,
     assigne_id  VARCHAR(10)  DEFAULT NULL,
     PRIMARY KEY (id),
@@ -54,9 +54,9 @@ INSERT INTO collaborateur (identifiant, metier, prenom, nom, salaire, langage_pr
 
 -- Tickets
 INSERT INTO ticket (titre, priorite, statut, assigne_id) VALUES
-('Corriger l export PDF', 'HAUTE', 'A_FAIRE', NULL),
-('Ajouter la recherche par nom', 'NORMALE', 'A_FAIRE', NULL),
-('Mettre a jour la documentation', 'BASSE', 'EN_COURS', 'C001'),
-('Optimiser les requetes SQL', 'HAUTE', 'EN_COURS', 'C002'),
-('Tester l interface utilisateur', 'NORMALE', 'A_VALIDER', 'C004'),
-('Corriger le bug de connexion', 'BASSE', 'TERMINE', 'C006');
+('Corriger l export PDF', 2, 'A_FAIRE', NULL),
+('Ajouter la recherche par nom', 1, 'A_FAIRE', NULL),
+('Mettre a jour la documentation', 0, 'EN_COURS', 'C001'),
+('Optimiser les requetes SQL', 2, 'EN_COURS', 'C002'),
+('Tester l interface utilisateur', 1, 'A_VALIDER', 'C004'),
+('Corriger le bug de connexion', 0, 'TERMINE', 'C006');

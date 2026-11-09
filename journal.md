@@ -1,4 +1,4 @@
-# Journal de bord — Projet Java (Jalon 2 & Livraison Finale)
+# Journal Projet Java 
 
 ---
 
@@ -10,26 +10,24 @@ Nous avons ensuite créé un `TicketService` pour isoler la logique liée aux ti
 Enfin, nous avons implémenté les règles spécifiques (ex: assignation réservée aux programmeurs, statut initial `A_FAIRE`).
 
 #### Éléments conservés du TP4
-* **Héritage et polymorphisme :** Nous réutilisons la hiérarchie `Collaborateur` (`Programmeur` et `Testeur`). Seul un programmeur peut recevoir un ticket, et seul un testeur peut le valider ou le renvoyer.
-* **Exceptions métier :** Nous levons des exceptions (`IllegalArgumentException`, `IllegalStateException`) au lieu d'afficher des erreurs directement dans les services. Les erreurs sont attrapées proprement dans `ConsoleApp`.
-* **Architecture en couches :** Séparation claire entre l'interface utilisateur (`ConsoleApp`), les services (`TicketService`, `CollaborateurService`) et la persistance (JPA / Hibernate).
+* Nous réutilisons la hiérarchie `Collaborateur` (`Programmeur` et `Testeur`). Seul un programmeur peut recevoir un ticket, et seul un testeur peut le valider ou le renvoyer.
+* Nous levons des exceptions (`IllegalArgumentException`, `IllegalStateException`) au lieu d'afficher des erreurs directement dans les services. Les erreurs sont attrapées proprement dans `ConsoleApp`.
+* Séparation claire entre l'interface utilisateur (`ConsoleApp`), les services (`TicketService`, `CollaborateurService`) et la persistance (JPA / Hibernate).
 
 ---
 
 ## 2. Deux décisions techniques
 
-1. **Méthode transactionnelle générique (`dansUneTransaction`) :**
-   Nous avons créé une méthode interne dans nos services qui gère l'ouverture (`begin`), la validation (`commit`) et l'annulation (`rollback`) des transactions JPA. Cela évite d'oublier de fermer l' `EntityManager` et garde le code lisible.
-
-2. **Héritage JPA en table unique (`SINGLE_TABLE`) :**
-   Tous les collaborateurs sont stockés dans la même table SQL (`collaborateur`), avec une colonne `metier` pour distinguer les programmeurs des testeurs. C'est simple à gérer et efficace pour les requêtes.
-
+1. Pour faire avancer un ticket dans son cycle de vie, nous avions choisi au départ d'implémenter une seule et unique méthode 'faireAvancerTicket()'. Dans un souci de lisibilité de code et de qualité nous avons ensuite décidé de séparer les méthodes (une pour démarrer, puis demander validation puis terminer). Cela permettait de séparer les responsabilités et ne pas avoir une seule méthode contenant plein de if/else.
+2. Mettre @Enumerated(EnumType.ORDINAL) sur les priorités pour que chaque valeur soit automatiquement associéee à un chiffre en base de données et que le classement par ordre croissant soit beaucoup plus significatif.
+   
 ---
 
 ## 3. État du projet & Tableau de recette
 
 L'application est terminée et fonctionnelle. Toutes les règles métier et la persistance en base de données fonctionnent correctement.
-
+Ce qui reste incomplet c'est notamment le fait que l'utilisateur doit rentrer manuellement la priorité au clavier lorsqu'il créé un ticket. Nous avons implémenté un menu qui permet à l'utilisateur de faire un choix num"rique lorsqu'il veut la modifier, mais par souci de temps nous n'avons pas pu l'intégrer partout ou cela aurait été nécessaire.
+Le concept de gestion des erreurs et son implémentation à tous les endroits ou nous pensions que c'était nécessaire est ce qui nous a le plus posé de difficulté au cours de ce projet.
 ### Tableau de recette (Jalon 2)
 
 | N° | Scénario de test | Résultat attendu | Constat |
@@ -66,13 +64,12 @@ mvn compile exec:java
 ---
 
 ## 5. Contribution de chacun
-
+* Travail collectif :
+  * Implémentation du cycle de vie des tickets (`demarrerTicket`, `demanderValidationTicket`, `terminerTicket`, `renvoyerTicket`).
 * **Lucas :**
-    * Implémentation du cycle de vie des tickets (`demarrerTicket`, `demanderValidationTicket`, `terminerTicket`, `renvoyerTicket`).
-    * Gestion des règles de modification (bloquée si le ticket est « Terminé ») et de suppression (autorisée uniquement si « À faire »).
+    * Implémentation et gestion des règles de modification (bloquée si le ticket est « Terminé ») et de suppression (autorisée uniquement si « À faire »).
     * Raccordement et mise à jour des choix du menu console dans `ConsoleApp.java`.
 
 * **Inès :**
     * Implémentation de la requête JPQL pour lister les tickets non assignés (triés par priorité décroissante puis par ID).
-    * Création du script SQL d'initialisation (`sql/projet-java.sql`) avec le jeu de données de test complet.
-    * Réalisation des tests de recette, vérification des 8 scénarios et rédaction du `JOURNAL.md`.
+    * Implémentation des classes d'exceptions.

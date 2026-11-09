@@ -1,6 +1,8 @@
 package fr.efrei.collaborateurs.service;
 
 import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
+import fr.efrei.collaborateurs.exception.OperationTicketInvalideException;
+import fr.efrei.collaborateurs.exception.TicketIntrouvableException;
 import fr.efrei.collaborateurs.modele.Collaborateur;
 import fr.efrei.collaborateurs.modele.Programmeur;
 import fr.efrei.collaborateurs.modele.Testeur;
@@ -35,17 +37,17 @@ public class TicketService {
         dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, ticketId);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+                throw new TicketIntrouvableException( ticketId );
             }
             Collaborateur c = em.find(Collaborateur.class, collaborateurId);
             if (c == null) {
                 throw new CollaborateurIntrouvableException(collaborateurId);
             }
             if (!(c instanceof Programmeur)) {
-                throw new IllegalArgumentException("Un ticket ne peut être assigné qu'à un Programmeur (ce collaborateur est un " + c.getMetier() + ")");
+                throw new OperationTicketInvalideException("Un ticket ne peut être assigné qu'à un Programmeur (ce collaborateur est un " + c.getMetier() + ")");
             }
             if (t.getStatut() != Ticket.Statut.A_FAIRE) {
-                throw new IllegalArgumentException("Un ticket ne peut être assigné que lorsqu'il est à l'état À FAIRE");
+                throw new OperationTicketInvalideException("Un ticket ne peut être assigné que lorsqu'il est à l'état À FAIRE");
             }
             t.setAssigne(c);
             return null;
@@ -56,7 +58,7 @@ public class TicketService {
         return dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
 
             if (t.getAssigne() != null) {
@@ -67,7 +69,7 @@ public class TicketService {
                         .getSingleResult();
 
                 if (nbEnCours >= 3) {
-                    throw new IllegalStateException("Le programmeur " + t.getAssigne().getIdentifiant() + " a déjà 3 tickets en cours.");
+                    throw new OperationTicketInvalideException("Le programmeur " + t.getAssigne().getIdentifiant() + " a déjà 3 tickets en cours.");
                 }
             }
 
@@ -82,7 +84,7 @@ public class TicketService {
         return dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             Ticket.Statut avant = t.getStatut();
             t.demanderValidation();
@@ -95,14 +97,14 @@ public class TicketService {
         return dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             Collaborateur c = em.find(Collaborateur.class, testeurId);
             if (c == null) {
                 throw new CollaborateurIntrouvableException(testeurId);
             }
             if (!(c instanceof Testeur)) {
-                throw new IllegalArgumentException("Seul un Testeur peut valider un ticket (ce collaborateur est un " + c.getMetier() + ")");
+                throw new OperationTicketInvalideException("Seul un Testeur peut valider un ticket (ce collaborateur est un " + c.getMetier() + ")");
             }
 
             Ticket.Statut avant = t.getStatut();
@@ -116,14 +118,14 @@ public class TicketService {
         return dansUneTransaction(em -> {
             Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + id_ticket + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             Collaborateur c = em.find(Collaborateur.class, testeurId);
             if (c == null) {
                 throw new CollaborateurIntrouvableException(testeurId);
             }
             if (!(c instanceof Testeur)) {
-                throw new IllegalArgumentException("Seul un Testeur peut renvoyer un ticket (ce collaborateur est un " + c.getMetier() + ")");
+                throw new OperationTicketInvalideException("Seul un Testeur peut renvoyer un ticket (ce collaborateur est un " + c.getMetier() + ")");
             }
 
             Ticket.Statut avant = t.getStatut();
@@ -133,36 +135,36 @@ public class TicketService {
         });
     }
 
-    public void modifierTitreTicket(Long ticketId, String nouveauTitre) {
+    public void modifierTitreTicket(Long id_ticket, String nouveauTitre) {
         dansUneTransaction(em -> {
-            Ticket t = em.find(Ticket.class, ticketId);
+            Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             t.modifierTitre(nouveauTitre);
             return null;
         });
     }
 
-    public void modifierPrioriteTicket(Long ticketId, Ticket.Priorite nouvellePriorite) {
+    public void modifierPrioriteTicket(Long id_ticket, Ticket.Priorite nouvellePriorite) {
         dansUneTransaction(em -> {
-            Ticket t = em.find(Ticket.class, ticketId);
+            Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             t.modifierPriorite(nouvellePriorite);
             return null;
         });
     }
 
-    public void supprimerTicket(Long ticketId) {
+    public void supprimerTicket(Long id_ticket) {
         dansUneTransaction(em -> {
-            Ticket t = em.find(Ticket.class, ticketId);
+            Ticket t = em.find(Ticket.class, id_ticket);
             if (t == null) {
-                throw new IllegalArgumentException("Ticket introuvable (ID: " + ticketId + ")");
+                throw new TicketIntrouvableException( id_ticket );
             }
             if (t.getStatut() != Ticket.Statut.A_FAIRE) {
-                throw new IllegalStateException("Un ticket ne peut être supprimé que s'il est encore à l'état 'À faire'.");
+                throw new OperationTicketInvalideException("Un ticket ne peut être supprimé que s'il est encore à l'état 'À faire'.");
             }
             em.remove(t);
             return null;
@@ -173,6 +175,23 @@ public class TicketService {
     public List<Ticket> tousLesTickets() {
         try (EntityManager em = eMFactory.createEntityManager()) {
             return em.createQuery("select t from Ticket t", Ticket.class).getResultList();
+        }
+    }
+
+    public void verifierExistenceTicket(Long id_Ticket) {
+        try (EntityManager em = eMFactory.createEntityManager()) {
+            if (em.find(Ticket.class, id_Ticket) == null) {
+                throw new TicketIntrouvableException(id_Ticket);
+            }
+        }
+    }
+
+    public List<Ticket> ticketsNonAssignes() {
+        try (EntityManager em = eMFactory.createEntityManager()) {
+            return em.createQuery(
+                    "SELECT t FROM Ticket t WHERE t.assigne IS NULL ORDER BY t.priorite DESC, t.id ASC",
+                    Ticket.class
+            ).getResultList();
         }
     }
 

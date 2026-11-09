@@ -2,6 +2,8 @@ package fr.efrei.collaborateurs.ui;
 
 import fr.efrei.collaborateurs.exception.CollaborateurDejaExistantException;
 import fr.efrei.collaborateurs.exception.CollaborateurIntrouvableException;
+import fr.efrei.collaborateurs.exception.OperationTicketInvalideException;
+import fr.efrei.collaborateurs.exception.TicketIntrouvableException;
 import fr.efrei.collaborateurs.modele.*;
 import fr.efrei.collaborateurs.service.CollaborateurService;
 import fr.efrei.collaborateurs.service.TicketService;
@@ -55,17 +57,19 @@ public class ConsoleApp {
                     case "16" -> modifierTitreTicket();
                     case "17" -> modifierPrioriteTicket();
                     case "18" -> supprimerTicket();
+                    case "19" -> listerTicketsNonAssignes();
                     case "0" -> continuer = false;
                     default -> System.out.println("Choix inconnu.");
                 }
             } catch (CollaborateurDejaExistantException e) {
-                System.out.println("Ce identifiant est déjà pris (" + e.identifiant() + "). Choisissez-en un autre.");
+                System.out.println("Cet identifiant est déjà pris (" + e.identifiant() + "). Choisissez-en un autre.");
             } catch (CollaborateurIntrouvableException e) {
                 System.out.println("Aucun collaborateur n'a l'identifiant " + e.identifiant() + ".");
-            } catch (SaisieInvalideException | IllegalArgumentException | IllegalStateException e) {
-                System.out.println("Saisie refusée : " + e.getMessage());
+            } catch (TicketIntrouvableException e) {
+                System.out.println("Erreur : " + e.getMessage());
+            } catch (OperationTicketInvalideException | SaisieInvalideException | IllegalArgumentException e) {
+                System.out.println("Opération refusée : " + e.getMessage());
             } catch (PersistenceException e) {
-                // Problème technique : détail dans les logs, message sobre pour l'utilisateur
                 logger.error("Erreur d'accès à la base de données", e);
                 System.out.println("Un problème technique est survenu, l'opération n'a pas été enregistrée.");
             }
@@ -93,6 +97,7 @@ public class ConsoleApp {
         System.out.println("16. Modifier le titre d'un ticket");
         System.out.println("17. Modifier la priorité d'un ticket");
         System.out.println("18. Supprimer un ticket");
+        System.out.println("19. Afficher les tickets non assignés");
         System.out.println("0. Quitter");
         System.out.print("Votre choix : ");
     }
@@ -118,7 +123,7 @@ public class ConsoleApp {
 
     private void ajouterTicket() {
         String titre = lireTexte("Titre");
-        Ticket.Priorite priorite = lireEnum("priorite", Ticket.Priorite.class);
+        Ticket.Priorite priorite = lireEnum("Priorite", Ticket.Priorite.class);
 
         Ticket nouveauTicket = new Ticket(titre, priorite);
 
@@ -168,6 +173,7 @@ public class ConsoleApp {
 
     private void assignerTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
+        ticket.verifierExistenceTicket(idTicket);
         String idCollaborateur = lireTexte("Identifiant du programmeur (ex: C001)");
 
         ticket.assignerTicket(idTicket, idCollaborateur);
@@ -195,6 +201,16 @@ public class ConsoleApp {
         }
     }
 
+    private void listerTicketsNonAssignes() {
+        List<Ticket> liste = ticket.ticketsNonAssignes();
+
+        if (liste.isEmpty()) {
+            System.out.println("Aucun ticket non assigné n'a été trouvé.");
+        } else {
+            liste.forEach(System.out::println);
+        }
+    }
+
     private void demarrerTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
         ticket.demarrerTicket(idTicket);
@@ -209,14 +225,16 @@ public class ConsoleApp {
 
     private void renvoyerTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
-        String idTesteur = lireTexte("Identifiant du testeur (ex: C003)");
+        ticket.verifierExistenceTicket(idTicket);
+        String idTesteur = lireTexte("Etes-vous bien un testeur ? Veuillez saisir votre identifiant ");
         ticket.renvoyerTicket(idTicket, idTesteur);
         System.out.println("Le ticket " + idTicket + " a été renvoyé en cours.");
     }
 
     private void terminerTicket() {
         long idTicket = (long) lireDecimal("ID du ticket");
-        String idTesteur = lireTexte("Identifiant du testeur (ex: C003)");
+        ticket.verifierExistenceTicket(idTicket);
+        String idTesteur = lireTexte("Etes-vous bien un testeur ? Veuillez saisir votre identifiant ");
         ticket.terminerTicket(idTicket, idTesteur);
         System.out.println("Le ticket " + idTicket + " est désormais terminé.");
     }
